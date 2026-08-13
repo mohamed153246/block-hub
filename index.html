@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>بلوك هَب | مودات ماين كرافت</title>
+<meta name="description" content="بلوك هَب - دليل خفيف وسريع لمودات وشيدرز وريسورس باكات ماين كرافت.">
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#0d1117;color:#e6edf3;font-family:Arial,sans-serif}
+main{max-width:1080px;margin:auto;padding:16px}
+header{text-align:center;padding:24px 8px 18px}
+h1{margin:0 0 8px;color:#66fcf1;font-size:32px}
+.sub{color:#8b949e;font-size:14px}
+.search{width:100%;margin:18px 0 12px;padding:13px 16px;background:#161b22;border:1px solid #30363d;border-radius:10px;color:#fff;font-size:15px;outline:none}
+.tabs,.filters{display:flex;justify-content:center;gap:7px;flex-wrap:wrap;margin:8px 0}
+button,select{background:#161b22;color:#e6edf3;border:1px solid #30363d;border-radius:8px;padding:9px 11px}
+button{cursor:pointer}
+button.active{border-color:#66fcf1;color:#66fcf1}
+#status{color:#8b949e;font-size:12px;margin:14px 0}
+#mods{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:12px}
+.card{background:#161b22;border:1px solid #30363d;border-radius:12px;padding:14px}
+.top{display:flex;gap:11px;align-items:center}
+.icon{width:58px;height:58px;border-radius:9px;object-fit:cover;background:#21262d}
+h2{margin:0 0 3px;font-size:17px}
+.author{font-size:12px;color:#66fcf1}
+.desc{color:#9da7b3;font-size:13px;line-height:1.55;min-height:42px}
+.badges{display:flex;gap:5px;flex-wrap:wrap;margin:8px 0}
+.badge{font-size:10px;padding:3px 7px;border-radius:20px;background:#21262d;color:#c9d1d9}
+.loader{color:#66fcf1}
+.download{display:block;text-align:center;text-decoration:none;background:#66fcf1;color:#081013;font-weight:700;padding:9px;border-radius:7px}
+.empty{grid-column:1/-1;text-align:center;padding:40px;color:#8b949e}
+footer{text-align:center;color:#6e7681;font-size:11px;padding:30px 0}
+@media(max-width:600px){h1{font-size:27px}#mods{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<main>
+<header>
+<h1>⛏️ بلوك هَب</h1>
+<div class="sub">مودات وشيدرز وريسورس باكات ماين كرافت</div>
+<input id="search" class="search" placeholder="🔎 ابحث عن إضافة..." autocomplete="off">
+
+<div class="tabs">
+<button class="tab active" data-cat="mod">🛠️ مودات</button>
+<button class="tab" data-cat="resourcepack">🎨 ريسورس باكات</button>
+<button class="tab" data-cat="shader">🌌 شيدرز</button>
+<button class="tab" data-cat="datapack">📜 داتا باكات</button>
+</div>
+
+<div class="filters">
+<select id="loader"><option value="">كل اللودرات</option></select>
+<select id="version"><option value="">كل الإصدارات</option></select>
+</div>
+
+<div id="status">جاري جلب الإضافات من Modrinth...</div>
+</header>
+
+<section id="mods"><div class="empty">جاري التحميل...</div></section>
+
+<footer>بلوك هَب © 2026 — التحميل يتم من Modrinth.</footer>
+</main>
+
+<script>
+const API="https://api.modrinth.com/v2/search";
+const LIMIT=24;
+let all=[];
+let category="mod";
+
+const mods=document.getElementById("mods");
+const search=document.getElementById("search");
+const loader=document.getElementById("loader");
+const version=document.getElementById("version");
+const status=document.getElementById("status");
+
+const esc=s=>String(s??"").replace(/[&<>"']/g,m=>({
+"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+}[m]));
+
+async function fetchCategory(cat){
+  const facets=JSON.stringify([[`project_type:${cat}`]]);
+  const url=API+"?limit="+LIMIT+"&index=downloads&facets="+encodeURIComponent(facets);
+  const r=await fetch(url);
+  if(!r.ok) throw new Error("Modrinth HTTP "+r.status);
+  const data=await r.json();
+  return data.hits||[];
+}
+
+function buildFilters(){
+  const loaders=new Set(), versions=new Set();
+  all.forEach(x=>(x.categories||[]).forEach(c=>{
+    if(["fabric","forge","neoforge","quilt"].includes(c)) loaders.add(c);
+  }));
+  all.forEach(x=>(x.versions||[]).forEach(v=>versions.add(v)));
+
+  loader.innerHTML='<option value="">كل اللودرات</option>'+
+    [...loaders].map(x=>`<option value="${esc(x)}">${esc(x)}</option>`).join("");
+
+  const sorted=[...versions].sort((a,b)=>b.localeCompare(a,undefined,{numeric:true}));
+  version.innerHTML='<option value="">كل الإصدارات</option>'+
+    sorted.map(x=>`<option value="${esc(x)}">${esc(x)}</option>`).join("");
+}
+
+function render(){
+  const q=search.value.trim().toLowerCase();
+  const l=loader.value;
+  const v=version.value;
+
+  const list=all.filter(x=>{
+    if(x.project_type!==category) return false;
+    const text=((x.title||"")+" "+(x.description||"")).toLowerCase();
+    const hasLoader=!l || (x.categories||[]).includes(l);
+    const hasVersion=!v || (x.versions||[]).includes(v);
+    return (!q || text.includes(q)) && hasLoader && hasVersion;
+  });
+
+  status.textContent=`${list.length} نتيجة`;
+
+  if(!list.length){
+    mods.innerHTML='<div class="empty">لا توجد نتائج مطابقة.</div>';
+    return;
+  }
+
+  mods.innerHTML=list.map(x=>{
+    const bs=(x.categories||[]).filter(c=>["fabric","forge","neoforge","quilt"].includes(c))
+      .slice(0,3).map(c=>`<span class="badge loader">${esc(c)}</span>`).join("");
+    const vs=(x.versions||[]).slice(0,2)
+      .map(v=>`<span class="badge">${esc(v)}</span>`).join("");
+
+    return `<article class="card">
+      <div class="top">
+        <img class="icon" src="${esc(x.icon_url||"")}" alt="" loading="lazy">
+        <div>
+          <h2>${esc(x.title)}</h2>
+          <div class="author">بواسطة ${esc(x.author)}</div>
+        </div>
+      </div>
+      <p class="desc">${esc(x.description||"لا يوجد وصف.")}</p>
+      <div class="badges">${bs}${vs}</div>
+      <a class="download" href="https://modrinth.com/${esc(x.project_type)}/${esc(x.slug)}"
+         target="_blank" rel="noopener noreferrer">عرض وتحميل ↗</a>
+    </article>`;
+  }).join("");
+}
+
+async function load(){
+  try{
+    const categories=["mod","resourcepack","shader","datapack"];
+    const responses=await Promise.all(categories.map(fetchCategory));
+    all=responses.flat();
+    buildFilters();
+    render();
+  }catch(e){
+    console.error(e);
+    status.textContent="حدث خطأ في الاتصال";
+    mods.innerHTML=`<div class="empty">تعذر جلب الإضافات من Modrinth.<br>حدّث الصفحة وحاول مرة أخرى.</div>`;
+  }
+}
+
+document.querySelectorAll(".tab").forEach(btn=>{
+  btn.addEventListener("click",()=>{
+    document.querySelectorAll(".tab").forEach(x=>x.classList.remove("active"));
+    btn.classList.add("active");
+    category=btn.dataset.cat;
+    render();
+  });
+});
+
+search.addEventListener("input",render);
+loader.addEventListener("change",render);
+version.addEventListener("change",render);
+load();
+</script>
+</body>
+</html>
