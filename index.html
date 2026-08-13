@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>بلوك هَب | مودات ماين كرافت</title>
+<meta name="description" content="دليل خفيف وسريع لمودات وشيدرز وريسورس باكات ماين كرافت.">
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#0d1117;color:#e6edf3;font-family:Arial,sans-serif}
+main{max-width:1050px;margin:auto;padding:24px 14px}
+header{text-align:center;padding:24px 10px 18px}
+h1{margin:0 0 8px;font-size:32px;color:#66fcf1}
+header p{margin:0;color:#9da7b3}
+.search{width:100%;padding:13px 16px;margin:18px 0;background:#161b22;border:1px solid #30363d;border-radius:10px;color:#fff;font-size:15px;outline:0}
+.filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}
+select,.tab{background:#161b22;color:#e6edf3;border:1px solid #30363d;border-radius:8px;padding:10px 12px}
+.tabs{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:12px}
+.tab{cursor:pointer}
+.tab.active{border-color:#66fcf1;color:#66fcf1}
+#mods{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px}
+.card{background:#161b22;border:1px solid #30363d;border-radius:12px;padding:14px}
+.top{display:flex;gap:11px;align-items:center}
+.icon{width:56px;height:56px;border-radius:9px;object-fit:cover;background:#21262d}
+h2{font-size:17px;margin:0 0 3px}
+.author{font-size:12px;color:#66fcf1}
+.desc{font-size:13px;line-height:1.6;color:#9da7b3;min-height:42px}
+.badges{display:flex;gap:5px;flex-wrap:wrap;margin:8px 0}
+.badge{font-size:11px;padding:3px 7px;border-radius:20px;background:#21262d;color:#c9d1d9}
+a.btn{display:block;text-align:center;text-decoration:none;background:#66fcf1;color:#0d1117;font-weight:bold;padding:9px;border-radius:7px}
+.empty{text-align:center;color:#8b949e;padding:35px}
+footer{text-align:center;color:#6e7681;font-size:12px;padding:35px 0}
+@media(max-width:600px){h1{font-size:27px}#mods{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<main>
+<header>
+<h1>⛏️ بلوك هَب</h1>
+<p>مودات وشيدرز وريسورس باكات ماين كرافت</p>
+<input id="search" class="search" placeholder="🔎 ابحث عن مود..." autocomplete="off">
+<div class="tabs">
+<button class="tab active" data-cat="mod">🛠️ مودات</button>
+<button class="tab" data-cat="resourcepack">🎨 ريسورس باكات</button>
+<button class="tab" data-cat="shader">🌌 شيدرز</button>
+<button class="tab" data-cat="datapack">📜 داتا باكات</button>
+</div>
+<div class="filters">
+<select id="loader"><option value="">كل اللودرات</option></select>
+<select id="version"><option value="">كل الإصدارات</option></select>
+</div>
+</header>
+<section id="mods"><div class="empty">جارٍ تحميل الإضافات...</div></section>
+<footer>بلوك هَب © 2026 — الروابط تقود إلى مصادر الإضافات الرسمية.</footer>
+</main>
+<script>
+const $=s=>document.querySelector(s);
+const modsEl=$("#mods"),search=$("#search"),loader=$("#loader"),version=$("#version");
+let data=[],cat="mod";
+const esc=s=>String(s??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));
+function options(){
+  const ls=new Set(),vs=new Set();
+  data.forEach(m=>(m.loaders||"").split(",").filter(Boolean).forEach(x=>ls.add(x)));
+  data.forEach(m=>(m.game_versions||"").split(",").filter(Boolean).forEach(x=>vs.add(x)));
+  loader.innerHTML='<option value="">كل اللودرات</option>'+[...ls].map(x=>`<option>${esc(x)}</option>`).join("");
+  version.innerHTML='<option value="">كل الإصدارات</option>'+[...vs].sort((a,b)=>b.localeCompare(a,undefined,{numeric:true})).map(x=>`<option>${esc(x)}</option>`).join("");
+}
+function render(){
+  const q=search.value.trim().toLowerCase(),l=loader.value,v=version.value;
+  const arr=data.filter(m=>{
+    const okCat=(m.category||"mod")===cat;
+    const text=((m.title||"")+" "+(m.description||"")).toLowerCase();
+    return okCat&&(!q||text.includes(q))&&(!l||(m.loaders||"").split(",").includes(l))&&(!v||(m.game_versions||"").split(",").includes(v));
+  });
+  if(!arr.length){modsEl.innerHTML='<div class="empty">لا توجد نتائج.</div>';return}
+  modsEl.innerHTML=arr.map(m=>{
+    const badges=(m.loaders||"").split(",").filter(Boolean).slice(0,3).map(x=>`<span class="badge">${esc(x)}</span>`).join("");
+    const vers=(m.game_versions||"").split(",").filter(Boolean).slice(0,2).map(x=>`<span class="badge">${esc(x)}</span>`).join("");
+    return `<article class="card"><div class="top">
+      <img class="icon" loading="lazy" src="${esc(m.icon_url||"")}" alt="">
+      <div><h2>${esc(m.title)}</h2><div class="author">بواسطة ${esc(m.author||"غير معروف")}</div></div>
+    </div><p class="desc">${esc(m.description||"لا يوجد وصف.")}</p>
+    <div class="badges">${badges}${vers}</div>
+    <a class="btn" href="${esc(m.download_url||"#")}" target="_blank" rel="noopener">تحميل 🚀</a></article>`;
+  }).join("");
+}
+async function init(){
+  try{
+    const r=await fetch("mods_data.json?"+Date.now(),{cache:"no-store"});
+    if(!r.ok)throw Error();
+    data=(await r.json()).mods||[];
+    options();render();
+  }catch(e){modsEl.innerHTML='<div class="empty">تعذر تحميل قاعدة البيانات.</div>'}
+}
+document.querySelectorAll(".tab").forEach(b=>b.onclick=()=>{
+  document.querySelectorAll(".tab").forEach(x=>x.classList.remove("active"));
+  b.classList.add("active");cat=b.dataset.cat;render();
+});
+search.oninput=render;loader.onchange=render;version.onchange=render;init();
+</script>
+</body>
+</html>
