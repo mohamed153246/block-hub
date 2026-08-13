@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>بلوك هَب | دليلك لمودات Minecraft</title>
+<meta name="description" content="بلوك هَب: منصة عربية خفيفة وسريعة لاكتشاف مودات Minecraft، Resource Packs، Shaders، وData Packs، مع بحث وفلترة حسب الإصدار واللودر.">
+<meta name="keywords" content="Minecraft, مودات ماينكرافت, Resource Packs, Shaders, Data Packs, Fabric, Forge, Modrinth">
+<link rel="canonical" href="https://block-hub.pages.dev/">
+
+<meta property="og:type" content="website">
+<meta property="og:title" content="بلوك هَب | دليلك لمودات Minecraft">
+<meta property="og:description" content="اكتشف أفضل مودات Minecraft وResource Packs وShaders وData Packs بسهولة وسرعة.">
+<meta property="og:locale" content="ar_AR">
+<meta name="twitter:card" content="summary">
+
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='18' fill='%2322c55e'/%3E%3Ctext x='50' y='68' font-size='55' text-anchor='middle' fill='%23111'%3EB%3C/text%3E%3C/svg%3E">
+
+<style>
+:root {
+  --bg: #0d1117;
+  --bg-alt: #151b23;
+  --card: #171d26;
+  --border: #262c36;
+  --text: #e6edf3;
+  --text-dim: #9aa4b2;
+  --accent: #22c55e;
+  --accent-dim: #16803c;
+  --radius: 12px;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: "Segoe UI", Tahoma, Arial, sans-serif;
+  scroll-behavior: smooth;
+}
+
+a { color: inherit; text-decoration: none; }
+
+header.site-header {
+  padding: 28px 16px 18px;
+  text-align: center;
+  border-bottom: 1px solid var(--border);
+  background: linear-gradient(180deg, var(--bg-alt), var(--bg));
+}
+
+header.site-header h1 {
+  margin: 0 0 6px;
+  font-size: 1.9rem;
+  color: var(--accent);
+}
+
+header.site-header p {
+  margin: 0;
+  color: var(--text-dim);
+  font-size: 0.95rem;
+}
+
+.container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 18px 14px 60px;
+}
+
+.search-wrap {
+  margin: 18px 0 14px;
+}
+
+#search-input {
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background: var(--bg-alt);
+  color: var(--text);
+  font-size: 1rem;
+}
+
+#search-input:focus {
+  outline: 2px solid var(--accent-dim);
+}
+
+.tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.tab {
+  padding: 9px 16px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--bg-alt);
+  color: var(--text-dim);
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.tab.active {
+  background: var(--accent);
+  color: #062b12;
+  border-color: var(--accent);
+  font-weight: bold;
+}
+
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.filters select {
+  padding: 9px 12px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background: var(--bg-alt);
+  color: var(--text);
+  font-size: 0.9rem;
+  min-width: 150px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 14px;
+}
+
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.card-top {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.card-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 8px;
+  object-fit: cover;
+  background: var(--bg-alt);
+  flex-shrink: 0;
+}
+
+.card-title {
+  font-size: 1.02rem;
+  font-weight: bold;
+  margin: 0;
+}
+
+.card-author {
+  font-size: 0.8rem;
+  color: var(--text-dim);
+  margin: 0;
+}
+
+.card-desc {
+  font-size: 0.85rem;
+  color: var(--text-dim);
+  line-height: 1.5;
+  margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.card-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  font-size: 0.72rem;
+}
+
+.badge {
+  background: var(--bg-alt);
+  border: 1px solid var(--border);
+  color: var(--text-dim);
+  padding: 3px 8px;
+  border-radius: 999px;
+}
+
+.card-downloads {
+  font-size: 0.78rem;
+  color: var(--text-dim);
+}
+
+.card-btn {
+  margin-top: auto;
+  text-align: center;
+  padding: 9px;
+  border-radius: 8px;
+  background: var(--accent);
+  color: #062b12;
+  font-weight: bold;
+  font-size: 0.88rem;
+}
+
+.card-btn:hover {
+  background: #34d374;
+}
+
+.empty-state {
+  text-align: center;
+  color: var(--text-dim);
+  padding: 40px 10px;
+}
+
+footer {
+  text-align: center;
+  color: var(--text-dim);
+  font-size: 0.78rem;
+  padding: 20px 10px 40px;
+  border-top: 1px solid var(--border);
+}
+
+@media (max-width: 480px) {
+  header.site-header h1 { font-size: 1.5rem; }
+  .grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
+}
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <h1>بلوك هَب</h1>
+  <p>دليلك لمودات Minecraft — Resource Packs، Shaders، وData Packs</p>
+</header>
+
+<main class="container">
+
+  <div class="search-wrap">
+    <input type="search" id="search-input" placeholder="🔎 ابحث عن إضافة..." aria-label="بحث">
+  </div>
+
+  <nav class="tabs" role="tablist" aria-label="أقسام الموقع">
+    <button class="tab active" data-section="mods" role="tab" aria-selected="true">مودات</button>
+<button class="tab" data-section="resourcepacks" role="tab" aria-selected="false">Resource Packs</button>
+<button class="tab" data-section="shaders" role="tab" aria-selected="false">Shaders</button>
+<button class="tab" data-section="datapacks" role="tab" aria-selected="false">Data Packs</button>
+  </nav>
+
+  <div class="filters">
+    <select id="loader-filter" aria-label="فلترة حسب اللودر">
+      <option value="">كل اللودرات</option>
+      <option value="fabric">Fabric</option>
+      <option value="forge">Forge</option>
+      <option value="neoforge">NeoForge</option>
+      <option value="quilt">Quilt</option>
+    </select>
+
+    <select id="version-filter" aria-label="فلترة حسب الإصدار">
+      <option value="">كل الإصدارات</option>
+    </select>
+  </div>
+
+  <section id="grid" class="grid" aria-live="polite"></section>
+
+  <p id="empty-msg" class="empty-state" hidden>لا توجد نتائج مطابقة لبحثك.</p>
+
+</main>
+
+<footer>
+  <p>بلوك هَب — البيانات مصدرها Modrinth API. آخر تحديث: 2026-08-13 21:20 UTC · إجمالي العناصر: 0</p>
+  <p>روابط التحميل تقودك مباشرة إلى الصفحة الرسمية للمشروع على Modrinth.</p>
+</footer>
+
+<script id="site-data" type="application/json">{"mods": [], "resourcepacks": [], "shaders": [], "datapacks": []}</script>
+<script>
+(function () {
+  "use strict";
+
+  var rawData = JSON.parse(document.getElementById("site-data").textContent || "{}");
+  var currentSection = Object.keys(rawData)[0] || "mods";
+
+  var gridEl = document.getElementById("grid");
+  var emptyMsg = document.getElementById("empty-msg");
+  var searchInput = document.getElementById("search-input");
+  var loaderFilter = document.getElementById("loader-filter");
+  var versionFilter = document.getElementById("version-filter");
+  var tabs = document.querySelectorAll(".tab");
+
+  function collectVersions(items) {
+    var set = {};
+    items.forEach(function (item) {
+      (item.versions || []).forEach(function (v) { set[v] = true; });
+    });
+    return Object.keys(set).sort().reverse();
+  }
+
+  function populateVersionFilter() {
+    var items = rawData[currentSection] || [];
+    var versions = collectVersions(items);
+    var current = versionFilter.value;
+    versionFilter.innerHTML = '<option value="">كل الإصدارات</option>';
+    versions.forEach(function (v) {
+      var opt = document.createElement("option");
+      opt.value = v;
+      opt.textContent = v;
+      versionFilter.appendChild(opt);
+    });
+    if (versions.indexOf(current) !== -1) {
+      versionFilter.value = current;
+    }
+  }
+
+  function formatDownloads(n) {
+    if (n >= 1000000) return (n / 1000000).toFixed(1) + "م";
+    if (n >= 1000) return (n / 1000).toFixed(1) + "ألف";
+    return String(n);
+  }
+
+  function escapeHtml(str) {
+    var div = document.createElement("div");
+    div.textContent = str == null ? "" : str;
+    return div.innerHTML;
+  }
+
+  function renderCards() {
+    var items = rawData[currentSection] || [];
+    var query = (searchInput.value || "").trim().toLowerCase();
+    var loader = loaderFilter.value;
+    var version = versionFilter.value;
+
+    var filtered = items.filter(function (item) {
+      if (query) {
+        var haystack = (item.title + " " + item.author + " " + item.description).toLowerCase();
+        if (haystack.indexOf(query) === -1) return false;
+      }
+      if (loader && (item.loaders || []).indexOf(loader) === -1) return false;
+      if (version && (item.versions || []).indexOf(version) === -1) return false;
+      return true;
+    });
+
+    gridEl.innerHTML = "";
+
+    if (filtered.length === 0) {
+      emptyMsg.hidden = false;
+      return;
+    }
+    emptyMsg.hidden = true;
+
+    var frag = document.createDocumentFragment();
+
+    filtered.forEach(function (item) {
+      var card = document.createElement("article");
+      card.className = "card";
+
+      var loadersHtml = (item.loaders || [])
+        .map(function (l) { return '<span class="badge">' + escapeHtml(l) + "</span>"; })
+        .join("");
+
+      var versionsHtml = (item.versions || [])
+        .slice(0, 3)
+        .map(function (v) { return '<span class="badge">' + escapeHtml(v) + "</span>"; })
+        .join("");
+
+      var iconSrc = item.icon_url ? item.icon_url : "";
+
+      card.innerHTML =
+        '<div class="card-top">' +
+          (iconSrc
+            ? '<img class="card-icon" src="' + escapeHtml(iconSrc) + '" alt="" loading="lazy" width="44" height="44">'
+            : '<div class="card-icon"></div>') +
+          '<div>' +
+            '<p class="card-title">' + escapeHtml(item.title) + '</p>' +
+            '<p class="card-author">بواسطة ' + escapeHtml(item.author) + '</p>' +
+          '</div>' +
+        '</div>' +
+        '<p class="card-desc">' + escapeHtml(item.description) + '</p>' +
+        '<div class="card-meta">' + loadersHtml + versionsHtml + '</div>' +
+        '<p class="card-downloads">⬇ ' + formatDownloads(item.downloads || 0) + ' تنزيل</p>' +
+        '<a class="card-btn" href="' + escapeHtml(item.url) + '" target="_blank" rel="noopener noreferrer">عرض وتحميل</a>';
+
+      frag.appendChild(card);
+    });
+
+    gridEl.appendChild(frag);
+  }
+
+  tabs.forEach(function (tab) {
+    tab.addEventListener("click", function () {
+      tabs.forEach(function (t) {
+        t.classList.remove("active");
+        t.setAttribute("aria-selected", "false");
+      });
+      tab.classList.add("active");
+      tab.setAttribute("aria-selected", "true");
+      currentSection = tab.getAttribute("data-section");
+      versionFilter.value = "";
+      populateVersionFilter();
+      renderCards();
+    });
+  });
+
+  searchInput.addEventListener("input", renderCards);
+  loaderFilter.addEventListener("change", renderCards);
+  versionFilter.addEventListener("change", renderCards);
+
+  populateVersionFilter();
+  renderCards();
+})();
+</script>
+
+</body>
+</html>
