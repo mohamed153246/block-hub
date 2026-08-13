@@ -29,16 +29,19 @@ jobs:
           MODRINTH_USER_AGENT: ${{ secrets.MODRINTH_USER_AGENT }}
         run: python bot.py
 
-      - name: حفظ التحديث
-        run: |
-          git config user.name "block-hub-bot"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add mods_data.json
+- name: حفظ التحديث
+  run: |
+    git config user.name "block-hub-bot"
+    git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-          if git diff --cached --quiet; then
-            echo "لا توجد تغييرات."
-            exit 0
-          fi
+    git add mods_data.json
 
-          git commit -m "تحديث بيانات Minecraft"
-          git push
+    if git diff --cached --quiet; then
+      echo "لا توجد تغييرات."
+      exit 0
+    fi
+
+    git commit -m "🤖 تحديث بيانات Minecraft"
+
+    git pull --rebase origin main
+    git push
